@@ -58,8 +58,8 @@ class Klimate extends StatefulWidget{
           ) ,
           new Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.fromLTRB(45.5, 50.5, 0.0, 0.0),
-            child: new Text("13.5F",style:tempStyle()),
+            padding: const EdgeInsets.fromLTRB(25.5, 70.5, 0.0, 0.0),
+            child: updateTempWidget('Beira'),
           )           
                     ],
                   ),
@@ -67,11 +67,36 @@ class Klimate extends StatefulWidget{
               }
 
               Future<Map> getWeather(String appId,String city) async {
-                String apiUrl='https://samples.openweathermap.org/data/2.5/weather?q=$city&appid=${util.appId}&units=imperial';
+                String apiUrl='https://api.openweathermap.org/data/2.5/weather?q=$city&appid=' 
+                '${util.appId}&units=imperial';
                 http.Response response =await http.get(apiUrl);
                 
                 return json.decode(response.body); 
               }
+              Widget updateTempWidget(String city){
+                return new FutureBuilder(
+                  future: getWeather(util.appId, city),
+                  builder: (BuildContext context,AsyncSnapshot<Map> snapshot){
+                    //where we get all of the json data, we setup widgets etc.
+
+                    if(snapshot.hasData){
+                      Map content=snapshot.data;
+                      return new Container(
+                        child: new Column(
+                          children: <Widget>[
+
+                            new ListTile(
+                              title: new Text(content['main']['temp'.toString()]),
+                            )
+                          ],)
+                        ,
+                      );
+                    }
+
+                  },
+                );
+              }
+    
             }
             
              CityStyle() {  // we can style as using methods for fonts etc
