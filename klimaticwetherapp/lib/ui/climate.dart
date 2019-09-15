@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import '../util/utils.dart' as util;
 
 class Klimate extends StatefulWidget{
   @override
@@ -10,6 +14,10 @@ class Klimate extends StatefulWidget{
     }
     
     class StateKlimate extends State<Klimate> {
+      void showStuff() async{
+        Map data =await getWeather(util.appId, util.defaultCity);
+        print(data.toString());
+      }
   @override
   Widget build(BuildContext context) {
    
@@ -22,7 +30,7 @@ class Klimate extends StatefulWidget{
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.menu),
-            onPressed:() =>debugPrint("hashika"),
+            onPressed:() =>getWeather,
           )
           
           
@@ -39,13 +47,30 @@ class Klimate extends StatefulWidget{
           ),
           new Container(
             alignment:Alignment.topRight,
-            padding:const EdgeInsets.fromLTRB(0.0, 10.3, 10.3, 0.0),
+            padding:const EdgeInsets.fromLTRB(0.0, 14.3, 10.3, 0.0),
             child: new Text("spaonerd",
             style: CityStyle()),
-                      )
+                      ),
+          new Container(
+            alignment: Alignment.center,
+            child: new Image.asset('images/light_rain.png'),
+
+          ) ,
+          new Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(45.5, 50.5, 0.0, 0.0),
+            child: new Text("13.5F",style:tempStyle()),
+          )           
                     ],
                   ),
                 );
+              }
+
+              Future<Map> getWeather(String appId,String city) async {
+                String apiUrl='https://samples.openweathermap.org/data/2.5/weather?q=$city&appid=${util.appId}&units=imperial';
+                http.Response response =await http.get(apiUrl);
+                
+                return json.decode(response.body); 
               }
             }
             
@@ -56,4 +81,11 @@ class Klimate extends StatefulWidget{
                 fontStyle: FontStyle.italic
 
               );
+             }
+             TextStyle tempStyle(){
+               return new TextStyle(
+                 color: Colors.white,
+                 fontSize: 46.7,
+                 fontStyle: FontStyle.normal
+               );
              }
