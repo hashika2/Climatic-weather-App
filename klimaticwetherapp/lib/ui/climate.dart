@@ -14,6 +14,16 @@ class Klimate extends StatefulWidget{
     }
     
     class StateKlimate extends State<Klimate> {
+
+      Future _gotToNextScreen(BuildContext context)async{
+    Map result=await Navigator.of(context).push(
+      new MaterialPageRoute<Map>(
+        builder:(BuildContext context){
+          return new ChangeCity();
+        }),
+    );
+      }
+
       void showStuff() async{
         Map data =await getWeather(util.appId, util.defaultCity);
         print(data.toString());
@@ -30,7 +40,7 @@ class Klimate extends StatefulWidget{
         actions: <Widget>[
           new IconButton(
             icon: new Icon(Icons.menu),
-            onPressed:() =>getWeather,
+            onPressed:() {_gotToNextScreen(context);},
           )
           
           
@@ -67,7 +77,7 @@ class Klimate extends StatefulWidget{
               }
 
               Future<Map> getWeather(String appId,String city) async {
-                String apiUrl='https://api.openweathermap.org/data/2.5/weather?q=$city&appid=' 
+                String apiUrl='http://api.openweathermap.org/data/2.5/weather?q=$city&appid='
                 '${util.appId}&units=imperial';
                 http.Response response =await http.get(apiUrl);
                 
@@ -76,7 +86,7 @@ class Klimate extends StatefulWidget{
               Widget updateTempWidget(String city){
                 return new FutureBuilder(
                   future: getWeather(util.appId, city),
-                  builder: (BuildContext context,AsyncSnapshot<Map> snapshot){
+                  builder: (BuildContext context, AsyncSnapshot<Map> snapshot){
                     //where we get all of the json data, we setup widgets etc.
 
                     if(snapshot.hasData){
@@ -86,7 +96,7 @@ class Klimate extends StatefulWidget{
                           children: <Widget>[
 
                             new ListTile(
-                              title: new Text(content['main']['temp'.toString()]),
+                              title: new Text(content['main']['temp'].toString()),
                             )
                           ],)
                         ,
@@ -97,6 +107,38 @@ class Klimate extends StatefulWidget{
                 );
               }
     
+            }
+            class ChangeCity extends StatelessWidget {
+              const ChangeCity({Key key}) : super(key: key);
+            
+              @override
+              Widget build(BuildContext context) {
+                return 
+                  new Scaffold(
+                    appBar: new AppBar(
+                      title: new Text("Enter the City"),
+                      backgroundColor: Colors.blueAccent,
+                      centerTitle: true,
+                    ),
+                   body: new Stack(
+                     children: <Widget>[
+                       new Center(
+                         child:
+                           new Image.asset('images/white_snow.png',
+                           width: 400.0,
+                           height: 1100.0,
+                           fit: BoxFit.fill,)
+                           
+                         
+                       )
+                     ],
+                    
+                   ),
+                    
+                  
+                );
+                
+              }
             }
             
              CityStyle() {  // we can style as using methods for fonts etc
