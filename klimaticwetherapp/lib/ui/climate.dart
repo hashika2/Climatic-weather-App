@@ -103,10 +103,21 @@ class Klimate extends StatefulWidget{
 
                             new ListTile(
                               title: new Text(content['main']['temp'].toString()),
+                              subtitle: new ListTile(
+                                title: new Text("Humadity :${content['main']['humidity'].toString()}\n"
+                                                "Min :${content['main']['temp_min'].toString()} F\n"
+                                                "Max :${content['main']['temp_max'].toString()} F\n",
+                                                
+                                style: extraTemp(),                ),
+                              ),
                             )
-                          ],)
-                        ,
+                            
+                          ],
+                          ),
+                              
+                        
                       );
+                      
                     }
 
                   },
@@ -181,6 +192,13 @@ class Klimate extends StatefulWidget{
                 fontStyle: FontStyle.italic
 
               );
+             }
+             TextStyle extraTemp(){
+               return new TextStyle(
+                 color: Colors.white70,
+                 fontSize: 46.7,
+                 fontStyle: FontStyle.normal
+               );
              }
              TextStyle tempStyle(){
                return new TextStyle(
