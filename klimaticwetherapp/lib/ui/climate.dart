@@ -15,6 +15,8 @@ class Klimate extends StatefulWidget{
     
     class StateKlimate extends State<Klimate> {
 
+      String _cityEntered;
+
       Future _gotToNextScreen(BuildContext context)async{
     Map result=await Navigator.of(context).push(
       new MaterialPageRoute<Map>(
@@ -22,6 +24,10 @@ class Klimate extends StatefulWidget{
           return new ChangeCity();
         }),
     );
+    if(result !=null && result.containsKey('enter')){
+      debugPrint('From First screen '+result['enter'].toString());
+
+    }
       }
 
       void showStuff() async{
@@ -58,7 +64,7 @@ class Klimate extends StatefulWidget{
           new Container(
             alignment:Alignment.topRight,
             padding:const EdgeInsets.fromLTRB(0.0, 14.3, 10.3, 0.0),
-            child: new Text("spaonerd",
+            child: new Text("$_cityEntered",
             style: CityStyle()),
                       ),
           new Container(
@@ -69,7 +75,7 @@ class Klimate extends StatefulWidget{
           new Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.fromLTRB(25.5, 70.5, 0.0, 0.0),
-            child: updateTempWidget('Beira'),
+            child: updateTempWidget('${_cityEntered==null ? util.defaultCity :_cityEntered}'),
           )           
                     ],
                   ),
@@ -85,7 +91,7 @@ class Klimate extends StatefulWidget{
               }
               Widget updateTempWidget(String city){
                 return new FutureBuilder(
-                  future: getWeather(util.appId, city),
+                  future: getWeather(util.appId, city==null ?util.defaultCity :city),
                   builder: (BuildContext context, AsyncSnapshot<Map> snapshot){
                     //where we get all of the json data, we setup widgets etc.
 
@@ -109,14 +115,15 @@ class Klimate extends StatefulWidget{
     
             }
             class ChangeCity extends StatelessWidget {
-              const ChangeCity({Key key}) : super(key: key);
+              var _cityFieldController=new TextEditingController();
+             
             
               @override
               Widget build(BuildContext context) {
                 return 
                   new Scaffold(
                     appBar: new AppBar(
-                      title: new Text("Enter the City"),
+                      title: new Text("Get Weather"),
                       backgroundColor: Colors.blueAccent,
                       centerTitle: true,
                     ),
@@ -130,6 +137,32 @@ class Klimate extends StatefulWidget{
                            fit: BoxFit.fill,)
                            
                          
+                       ),
+                       new ListView(
+                         children: <Widget>[
+                           new ListTile(
+                             title: new TextField(
+                               decoration: new InputDecoration(
+                                 hintText: " Weather",
+                               ),
+                               controller: _cityFieldController,
+                               keyboardType: TextInputType.text,
+                             ),
+                           ),
+                           new ListTile(
+                             title:new FlatButton(  //get city
+                               onPressed: (){
+                                 Navigator.pop(context,{
+                                   'enter':_cityFieldController.text
+                                 });
+                               },
+                               child: new Text(" GetWeather"),
+                               color: Colors.blueAccent,
+                               textColor: Colors.white70,
+                             )
+                             
+                           )
+                         ],
                        )
                      ],
                     
